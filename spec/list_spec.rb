@@ -4,6 +4,10 @@ require('./lib/list')
 
 describe(List) do
 
+  before() do
+    List.clear()
+  end
+
   describe(".all") do
     it("returns the class variable array of list objects") do
       test_list = List.new({ :description => "chores" })

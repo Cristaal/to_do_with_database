@@ -4,9 +4,22 @@ require('./lib/task')
 
 describe(Task) do
 
+  before() do
+    Task.clear()
+  end
+
   describe(".all") do
     it("is empty at first") do
      expect(Task.all()).to(eq([]))
+    end
+  end
+
+  describe(".clear") do
+    it("clears out the task array") do
+      test_task = Task.new({ :description => "Walk the dog." })
+      test_task.save()
+      Task.clear()
+      expect(Task.all()).to(eq([]))
     end
   end
 
@@ -24,6 +37,4 @@ describe(Task) do
       expect(test_task.description()).to(eq("Walk the dog."))
     end
   end
-
-
 end
