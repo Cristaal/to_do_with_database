@@ -1,5 +1,6 @@
 require('rspec')
 require('./lib/task')
+require('pg')
 
 
 describe(Task) do
@@ -23,13 +24,6 @@ describe(Task) do
     end
   end
 
-  describe("#id") do
-    it("returns the id of the task.") do
-      test_task = Task.new({ :description => "Walk the dog"})
-      expect(test_task.id()).to(eq(1))
-    end
-  end
-
   describe("#save") do
     it("saves task objects to the class variable array") do
       test_task = Task.new({ :description => "Walk the dog." })
@@ -44,4 +38,20 @@ describe(Task) do
       expect(test_task.description()).to(eq("Walk the dog."))
     end
   end
+
+  describe("#==") do
+    it("is the same task if it has the same description") do
+      task1 = Task.new({:description => "learn SQL"})
+      task2 = Task.new({:description => "learn SQL"})
+      expect(task1).to(eq(task2))
+    end
+  end
+end
+
+DB = PG.connect({:dbname => 'to_do_test'})
+
+RSpec.configure do |config|
+    config.after(:each) do
+      DB.exec("DELETE FROM tasks *;")
+    end
 end

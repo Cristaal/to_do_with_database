@@ -18,4 +18,8 @@ class Task
   define_method(:save) do
     @@tasks.push(self)
   end
+
+  define_method(:==) do |another_task|
+    self.description().==(another_task.description())
+  end
 end
