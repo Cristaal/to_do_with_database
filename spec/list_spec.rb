@@ -1,6 +1,6 @@
 require('rspec')
 require('./lib/list')
-# require("./lib/task")
+require("./lib/task")
 
 describe(List) do
 
@@ -25,6 +25,13 @@ describe(List) do
     end
   end
 
+  describe("#id") do
+    it("returns the id of the task.") do
+      test_list = List.new({ :description => "chores"})
+      expect(test_list.id()).to(eq(1))
+    end
+  end
+
   describe("#description") do
     it("returns the description of a task list") do
       test_list = List.new({:description => "chores"})
@@ -40,5 +47,26 @@ describe(List) do
     end
   end
 
+  describe("#add_task_to_list") do
+    it("adds the task object passed to it into the task array of the list it is called on") do
+      test_list = List.new({ :description => "chores" })
+      test_list.save()
+      test_task = Task.new({ :description => "Walk the dog." })
+      test_task.save()
+      test_list.add_task_to_list(test_task)
+      expect(test_list.tasks()).to(eq([test_task]))
+    end
+  end
+
+  describe("#tasks") do
+    it("returns the task object array") do
+    test_list = List.new({ :description => "chores "})
+    test_list.save()
+    test_task = Task.new({ :description => "walk the dog" })
+    test_task.save()
+    test_list.add_task_to_list(test_task)
+    expect(test_list.tasks()).to(eq([test_task]))
+    end
+  end
 
 end

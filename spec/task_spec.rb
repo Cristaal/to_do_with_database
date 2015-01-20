@@ -23,6 +23,13 @@ describe(Task) do
     end
   end
 
+  describe("#id") do
+    it("returns the id of the task.") do
+      test_task = Task.new({ :description => "Walk the dog"})
+      expect(test_task.id()).to(eq(1))
+    end
+  end
+
   describe("#save") do
     it("saves task objects to the class variable array") do
       test_task = Task.new({ :description => "Walk the dog." })
