@@ -2,12 +2,15 @@ require('rspec')
 require('./lib/task')
 require('pg')
 
+DB = PG.connect({:dbname => 'to_do_test'})
+
+RSpec.configure do |config|
+  config.after(:each) do
+    DB.exec("DELETE FROM tasks *;")
+  end
+end
 
 describe(Task) do
-
-  before() do
-    Task.clear()
-  end
 
   describe(".all") do
     it("is empty at first") do
@@ -15,14 +18,14 @@ describe(Task) do
     end
   end
 
-  describe(".clear") do
-    it("clears out the task array") do
-      test_task = Task.new({ :description => "Walk the dog." })
-      test_task.save()
-      Task.clear()
-      expect(Task.all()).to(eq([]))
-    end
-  end
+  # describe(".clear") do
+  #   it("clears out the task array") do
+  #     test_task = Task.new({ :description => "Walk the dog." })
+  #     test_task.save()
+  #     Task.clear()
+  #     expect(Task.all()).to(eq([]))
+  #   end
+  # end
 
   describe("#save") do
     it("saves task objects to the class variable array") do
@@ -46,12 +49,4 @@ describe(Task) do
       expect(task1).to(eq(task2))
     end
   end
-end
-
-DB = PG.connect({:dbname => 'to_do_test'})
-
-RSpec.configure do |config|
-    config.after(:each) do
-      DB.exec("DELETE FROM tasks *;")
-    end
 end

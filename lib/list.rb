@@ -1,28 +1,38 @@
 class List
 
-  @@task_lists = []
+
   attr_reader(:description, :tasks, :id)
 
   define_method(:initialize) do |attributes|
     @description = attributes.fetch(:description)
-    @tasks = []
-    @id = @@task_lists.length().+(1)
+    @id = attributes.fetch(:id)
   end
 
   define_singleton_method(:all) do
-    @@task_lists
+    returned_lists = DB.exec("SELECT * FROM lists;")
+    lists = []
+    returned_lists.each() do |list|
+      description = list.fetch("description")
+      id = list.fetch("id").to_i()
+      lists.push(List.new({:description => description, :id => id}))
+    end
+    lists
   end
 
-  define_singleton_method(:clear) do
-    @@task_lists = []
-  end
+  # define_singleton_method(:clear) do
+  #   @@task_lists = []
+  # end
 
   define_method(:save) do
-    @@task_lists.push(self)
+    result = DB.exec("INSERT INTO lists (description) VALUES ('#{@description}') RETURNING id;")
+    @id = result.first().fetch("id").to_i()
   end
 
-  define_method(:add_task_to_list) do |task_object|
-    @tasks.push(task_object)
-  end
+  # define_method(:add_task_to_list) do |task_object|
+  #   @tasks.push(task_object)
+  #end
 
+  define_method(:==) do |another_list|
+    self.description().==(another_list.description()).&(self.id().==(another_list.id()))
+  end
 end

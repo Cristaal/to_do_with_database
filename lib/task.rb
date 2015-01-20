@@ -1,22 +1,22 @@
 class Task
-  @@tasks = []
-  attr_reader(:description, :id)
+  attr_reader(:description)
 
   define_method(:initialize) do |attributes|
     @description = attributes.fetch(:description)
-    @id = @@tasks.length().+(1)
   end
 
   define_singleton_method(:all) do
-    @@tasks
-  end
-
-  define_singleton_method(:clear) do
-    @@tasks = []
+    returned_tasks= DB.exec("SELECT * FROM tasks;")
+    tasks = []
+    returned_tasks.each() do |task|
+      description = task.fetch("description")
+      tasks.push(Task.new({:description => description}))
+    end
+    tasks
   end
 
   define_method(:save) do
-    @@tasks.push(self)
+    DB.exec("INSERT INTO tasks (description) VALUES ('#{@description}');")
   end
 
   define_method(:==) do |another_task|
