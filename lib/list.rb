@@ -19,6 +19,26 @@ class List
     lists
   end
 
+  define_singleton_method(:find) do |id|
+    found_list = nil
+    List.all().each() do |list|
+      if list.id().==(id)
+        found_list = list
+      end
+    end
+    found_list
+  end
+
+  define_method(:tasks) do
+    list_tasks = []
+    tasks = DB.exec("SELECT * FROM tasks WHERE list_id = #{self.id()};")
+    tasks.each() do |task|
+      description = task.fetch("description")
+      list_id = task.fetch("list_id").to_i()
+      list_tasks.push(Task.new({ :description => description, :list_id => list_id }))
+    end
+    list_tasks
+  end
   # define_singleton_method(:clear) do
   #   @@task_lists = []
   # end
@@ -28,9 +48,6 @@ class List
     @id = result.first().fetch("id").to_i()
   end
 
-  # define_method(:add_task_to_list) do |task_object|
-  #   @tasks.push(task_object)
-  #end
 
   define_method(:==) do |another_list|
     self.description().==(another_list.description()).&(self.id().==(another_list.id()))

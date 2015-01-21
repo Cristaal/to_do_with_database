@@ -1,15 +1,4 @@
-require('rspec')
-require('./lib/list')
-require("./lib/task")
-require("pg")
-
-DB = PG.connect({:dbname => 'to_do_test'})
-
-RSpec.configure do |config|
-  config.after(:each) do
-    DB.exec("DELETE FROM lists *;")
-  end
-end
+require("spec_helper")
 
 describe(List) do
   describe(".all") do
@@ -17,6 +6,16 @@ describe(List) do
       test_list = List.new({ :description => "chores", :id => nil })
       test_list.save()
       expect(List.all()).to(eq([test_list]))
+    end
+  end
+
+  describe(".find") do
+    it("returns a list by its ID number") do
+      test_list = List.new({:description => "Epicodus stuff", :id => nil})
+      test_list.save()
+      test_list2 = List.new({:description => "Home stuff", :id => nil})
+      test_list2.save()
+      expect(List.find(test_list2.id())).to(eq(test_list2))
     end
   end
 
@@ -52,26 +51,16 @@ describe(List) do
     end
   end
 
-  # describe("#add_task_to_list") do
-  #   it("adds the task object passed to it into the task array of the list it is called on") do
-  #     test_list = List.new({ :description => "chores", :id => nil })
-  #     test_list.save()
-  #     test_task = Task.new({ :description => "Walk the dog." })
-  #     test_task.save()
-  #     test_list.add_task_to_list(test_task)
-  #     expect(test_list.tasks()).to(eq([test_task]))
-  #   end
-  # end
-
-  # describe("#tasks") do
-  #   it("returns the task object array") do
-  #   test_list = List.new({ :description => "chores", :id => nil})
-  #   test_list.save()
-  #   test_task = Task.new({ :description => "walk the dog" })
-  #   test_task.save()
-  #   test_list.add_task_to_list(test_task)
-  #   expect(test_list.tasks()).to(eq([test_task]))
-  #   end
-  # end
+  describe("#tasks") do
+    it("returns the task array for the list") do
+    test_list = List.new({ :description => "chores", :id => nil})
+    test_list.save()
+    test_task = Task.new({ :description => "walk the dog", list_id => test_list.id })
+    test_task.save()
+    test_task2 = Task.new({ :description => "laundry", list_id => test_list.id })
+    test_task2.save()
+    expect(test_list.tasks()).to(eq([test_task, test_task2]))
+    end
+  end
 
 end

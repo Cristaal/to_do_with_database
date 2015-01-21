@@ -1,5 +1,23 @@
-<form action="/index" method="post">
+<h1>To Do</h1>
+
+<p>Create a new list:</p>
+
+<form action="/lists" method="post">
   <input type="text" id="list_description" name="list_description" placeholder="Enter list description">
   <button type="submit">Add List</button>
 
 </form>
+
+<% if @lists.any?() %>
+
+  <p>Click on a list to see its tasks:</p>
+
+  <ul>
+    <% @lists.each do |list| %>
+      <li><a href="/lists/<%= list.id() %>"><%= list.description() %></a></li>
+    <% end %>
+  </ul>
+
+  <% else %>
+    <p>There are no lists yet!</p>
+  <% end %>

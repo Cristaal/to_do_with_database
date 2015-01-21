@@ -1,14 +1,4 @@
-require('rspec')
-require('./lib/task')
-require('pg')
-
-DB = PG.connect({:dbname => 'to_do_test'})
-
-RSpec.configure do |config|
-  config.after(:each) do
-    DB.exec("DELETE FROM tasks *;")
-  end
-end
+require("spec_helper")
 
 describe(Task) do
 
@@ -29,7 +19,7 @@ describe(Task) do
 
   describe("#save") do
     it("saves task objects to the class variable array") do
-      test_task = Task.new({ :description => "Walk the dog." })
+      test_task = Task.new({ :description => "Walk the dog.", :list_id => 1 })
       test_task.save()
       expect(Task.all()).to(eq([test_task]))
     end
@@ -37,16 +27,23 @@ describe(Task) do
 
   describe("#description") do
     it("returns the description of the task") do
-      test_task = Task.new({ :description => "Walk the dog." })
+      test_task = Task.new({ :description => "Walk the dog.", :list_id => 1  })
       expect(test_task.description()).to(eq("Walk the dog."))
     end
   end
 
   describe("#==") do
     it("is the same task if it has the same description") do
-      task1 = Task.new({:description => "learn SQL"})
-      task2 = Task.new({:description => "learn SQL"})
+      task1 = Task.new({:description => "learn SQL", :list_id => 1 })
+      task2 = Task.new({:description => "learn SQL", :list_id => 1 })
       expect(task1).to(eq(task2))
+    end
+  end
+
+  describe("list_id") do
+    it("lets you read the list id out") do
+      test_task = Task.new({ :description => "learn SQL", :list_id => 1 })
+      expect(test_task.list_id()).to(eq(1))
     end
   end
 end
