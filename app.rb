@@ -14,7 +14,7 @@ end
 
 post("/lists") do
   description = params.fetch("list_description")
-  list = List.new({:description => description, id: => nil})
+  list = List.new({:description => description, :id => nil})
   list.save()
   @lists = List.all()
   erb(:index)
